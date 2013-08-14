@@ -21,16 +21,29 @@ public class CSVHelper {
 		fileName=_filename;
 	}
 	
-	public FileWriter createFile(){	
+	public FileWriter createFile_rawData(){	
 		try {
-			fileWriter = new FileWriter("C:\\Users\\Leslie\\Desktop\\EEGdata\\"+fileName);
-			fileWriter.write("COUNTER, AF,F7,F3,FC5,T7,P7,O1,O2,P8,T8,FC6,F4,F8,AF4,GYROX,GYROY,EEG_TIMESTAMP,ES_TIMESTAMP,TIMESTAMP\n"); 
+			fileWriter = new FileWriter("C:\\Users\\Leslie\\Desktop\\EEGdata\\WithEmotivAPI\\"+fileName);
+			fileWriter.write("COUNTER, AF3,F7,F3,FC5,T7,P7,O1,O2,P8,T8,FC6,F4,F8,AF4,GYROX,GYROY,EEG_TIMESTAMP,ES_TIMESTAMP,TIMESTAMP\n"); 
 			return fileWriter;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+	
+	public FileWriter createFile_emoState(){	
+		try {
+			fileWriter = new FileWriter("C:\\Users\\Leslie\\Desktop\\EEGdata\\WithEmotivAPI\\"+fileName);
+			fileWriter.write("ExcitementShortTermScore,ExcitementShortTermScore,EngagementBoredomScore,FrustrationScore,MeditationScore,ES_Timestamp,Timestamp\n"); 
+			return fileWriter;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 	
 	public void writeCSV(String data) {
 	
@@ -67,8 +80,11 @@ public class CSVHelper {
 	                }
 	            }
 	        }
+	        
+	        //System.out.println("count"+size[0]+"=="+size[1]);
 	        size[1]=size[1]/size[0]+1;
-	        size[0]--;
+	        //System.out.println("====count"+size[0]+"=="+size[1]);
+	        //size[0]--;
 	        return size;
 	    } finally {
 	        is.close();

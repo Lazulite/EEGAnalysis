@@ -12,16 +12,16 @@ public class EEGData extends Data{
 		super(_filepath);
 		// TODO Auto-generated constructor stub
 	}
+	
 	public String[][] readData(String[][] data) {
 		
 		try {
 			BufferedReader bufRdr;
-			bufRdr = new BufferedReader(new FileReader(filepath));
-	
+			bufRdr = new BufferedReader(new FileReader(filepath));	
 			String line = null;
 			int row = 0;
 			int col = 0;
-			System.out.println("size+"+data[0].length+data[1].length);
+			System.out.println("size  "+data[0].length+" ;  "+data.length);
 		//read each line of text file
 			bufRdr.readLine();
 			while((line = bufRdr.readLine()) != null)
@@ -31,11 +31,12 @@ public class EEGData extends Data{
 				while (st.hasMoreTokens())
 				{
 					//get next token and store it in the array
+					
 					data[row][col] = st.nextToken();
 					col++;
-					//col;
 				}
 				row++;
+				System.out.print("row : "+ row);
 				
 			}
 		} catch (NumberFormatException e) {
@@ -50,6 +51,29 @@ public class EEGData extends Data{
 		}*/
 		 
 		return data;
+	}
+	
+	public String[][] adjustData(String[][] data,int fore, int tail){
+		
+		String[][] adjData= new String[data.length-fore-tail][data[0].length];
+		
+		for(int i=0;i<data.length-fore-tail;i++){
+			for(int j=0;j<data[0].length;j++)
+			adjData[i][j]=data[i+fore][j];
+		}
+		
+		return adjData;		
+	}
+	
+	public double[] getChannel(String[][] allchannel, int channel){
+		double[] specificchannel=new double[allchannel.length];
+		//System.out.println(allchannel.length);
+		for(int i=0; i< allchannel.length; i++){
+			
+			specificchannel[i]=Double.valueOf(allchannel[i][channel]);
+			//System.out.println("i:   "+i+"  "+ specificchannel[i]);
+		}
+		return specificchannel;
 	}
 	
 	

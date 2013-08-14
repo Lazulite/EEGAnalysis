@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+
 import com.lw.eeg.data.CSVHelper;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
@@ -39,13 +40,14 @@ class Thread_EEG extends Thread{
 		nSamplesTaken	= new IntByReference(0);
 		
 		String path = "C:\\Users\\Leslie\\Desktop\\EEGdata\\";
-		CSVHelper csvHelper = new CSVHelper();
+		CSVHelper csvHelper1 = new CSVHelper();
+		CSVHelper csvHelper2 = new CSVHelper();
 		
 		Date time = new Date();
-		csvHelper.setFilename(csvHelper.getSimpleTime(time) + ".csv");
-		csvHelper.createFile();
-		
-		ArrayList<Double> eegdata = new ArrayList<Double>();
+		csvHelper1.setFilename(csvHelper1.getSimpleTime(time) + "_rawdata.csv");
+		csvHelper1.createFile_rawData();
+		csvHelper2.setFilename(csvHelper2.getSimpleTime(time) + "_emostate.csv");
+		csvHelper2.createFile_emoState();
 		
     	switch (option) {
 		case 1:
@@ -96,12 +98,31 @@ class Thread_EEG extends Thread{
 						Edk.INSTANCE.EE_DataAcquisitionEnable(userID.getValue(),true);
 						readytocollect = true;
 					}
+				if(eventType == Edk.EE_Event_t.EE_EmoStateUpdated.ToInt()){
+					Edk.INSTANCE.EE_EmoEngineEventGetEmoState(eEvent, eState);
+					
+					double[] emoState = new double[5];
+					emoState[0] = EmoState.INSTANCE.ES_AffectivGetExcitementShortTermScore(eState);
+					emoState[1] = EmoState.INSTANCE.ES_AffectivGetExcitementShortTermScore(eState);
+					emoState[2] = EmoState.INSTANCE.ES_AffectivGetEngagementBoredomScore(eState);
+					emoState[3] = EmoState.INSTANCE.ES_AffectivGetFrustrationScore(eState);
+					emoState[4] = EmoState.INSTANCE.ES_AffectivGetMeditationScore(eState);
+					
+					EmoState.INSTANCE.ES_GetTimeFromStart(eState);
+					Date date= new Date();
+					String timestamp=String.valueOf(date.getTime());
+					for(double d:emoState){	
+						csvHelper2.writeCSV(d+",");
+					}
+					csvHelper2.writeCSV(EmoState.INSTANCE.ES_GetTimeFromStart(eState)+","+timestamp+"\n");
+				}
+				
 			}
 			else if (state != EdkErrorCode.EDK_NO_EVENT.ToInt()) {
 				System.out.println("Internal error in Emotiv Engine!");
 				break;
 			}
-			
+
 			if (readytocollect) 
 			{
 				Edk.INSTANCE.EE_DataUpdateHandle(0, hData);
@@ -109,7 +130,7 @@ class Thread_EEG extends Thread{
 				Edk.INSTANCE.EE_DataGetNumberOfSample(hData, nSamplesTaken);
 				
 				//FileWriter dataWriter = createFile();
-
+				
 				if (nSamplesTaken != null)
 				{
 					if (nSamplesTaken.getValue() != 0) {
@@ -123,17 +144,18 @@ class Thread_EEG extends Thread{
 							for (int i = 0 ; i < 24 ; i++) {
 								
 								Edk.INSTANCE.EE_DataGet(hData, i, data, nSamplesTaken.getValue());
+
 								
 								String element=String.valueOf(data[sampleIdx]);
 								Date date= new Date();
 								String timestamp=String.valueOf(date.getTime());
 								
 								if (i==0){
-									csvHelper.writeCSV(element+",");
+									csvHelper1.writeCSV(element+",");
 								}else if(i>2 && i<21){
-									csvHelper.writeCSV( element+",");
+									csvHelper1.writeCSV( element+",");
 								}else if(i==22){
-									csvHelper.writeCSV(timestamp+"\n");
+									csvHelper1.writeCSV(timestamp+"\n");
 								}
 								
 								System.out.print("["+i+"]");

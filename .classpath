@@ -5,5 +5,7 @@
 	<classpathentry kind="lib" path="E:/dvlTools/Emotiv Research Edition SDK v2.0.0.20/doc/examples_Java/lib/jna.jar"/>
 	<classpathentry kind="lib" path="E:/dvlPackage/jar/opencsv-2.3.jar"/>
 	<classpathentry kind="lib" path="E:/dvlPackage/jar/jtransforms-2.4.jar"/>
+	<classpathentry kind="lib" path="E:/dvlPackage/jar/jfreechart/jcommon-1.0.18.jar"/>
+	<classpathentry kind="lib" path="E:/dvlPackage/jar/jfreechart/jfreechart-1.0.15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
